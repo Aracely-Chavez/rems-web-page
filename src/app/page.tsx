@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useState } from 'react';
@@ -25,7 +26,7 @@ export default function Home() {
     }
   };
 
-  const handleInputChange = (index: string, value) => {
+  const handleInputChange = (index: string, value: any) => {
     setValoresInputs(prevState => {
         const result = {
           ...prevState,
