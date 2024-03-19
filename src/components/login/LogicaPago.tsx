@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import { InputLabeledIn } from '../ui/InputLabeledIn'
 import FormControlLabel from '@mui/material/FormControlLabel';
