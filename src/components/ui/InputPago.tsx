@@ -6,7 +6,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement>{
 export function InputPago({customKey , ...props}: Props) {
   return (
     <input 
-        className='border-2 rounded-md border-black p-2 w-full'
+        className='border-2 rounded-md border-black p-2 w-full disabled:bg-gray-300 '
         {...props}
         data-key={customKey}
     />

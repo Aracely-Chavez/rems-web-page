@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import { Input } from './Input'
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
