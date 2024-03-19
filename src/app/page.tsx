@@ -81,7 +81,7 @@ export default function Home() {
       }
   };
     console.log(data);
-    const url = 'http://127.0.0.1:5000/calcular_pagos'; // URL de la API
+    const url = 'http://3.133.138.75:5000/calcular_pagos'; // URL de la API
     
     // Configuración de la solicitud
     const requestOptions = {
