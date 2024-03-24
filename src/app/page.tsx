@@ -67,13 +67,13 @@ export default function Home() {
           const data = {
               razon_social: valoresInputs['Razón Social *'],
               plazo: parseInt(valoresInputs['Plazo (meses) *']),
-              periodo_gracia: parseInt(valoresInputs['Periodo de gracia *']),
+              periodo_gracia: parseInt(valoresInputs['Periodo de gracia (días) *']),
               fecha_inicio: valoresInputs['Fecha de inicio *'],
               fecha_entrega: valoresInputs['Fecha de entrega *'],
               meses_corte: mesesCorte,
               monto_corte: pagosCorte,
               cant_estacionamientos: parseInt(valoresInputs['Cantidad de estacionamientos']),
-              m2_local: valoresInputs['Área cuadrada de oficinas'],
+              m2_local: valoresInputs['M2 de oficinas'],
               ipc: {
                   "2019": 1.90,
                   "2020": 1.97,
@@ -149,16 +149,16 @@ export default function Home() {
               <InputLabeled handleInputChange={handleInputChange} label="Plazo (meses) *" type="number"/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Periodo de gracia *" type="number"/>
+              <InputLabeled handleInputChange={handleInputChange} label="Periodo de gracia (días) *" type="number"/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
               <InputLabeled handleInputChange={handleInputChange} label="Cantidad de estacionamientos" type="number" />
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Área cuadrada de estacionamientos"/>
+              <InputLabeled handleInputChange={handleInputChange} label="M2 de estacionamientos"/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Área cuadrada de oficinas"/>
+              <InputLabeled handleInputChange={handleInputChange} label="M2 de oficinas"/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
               <InputLabeled handleInputChange={handleInputChange} label="Cantidad de depósitos" type="number"/>
