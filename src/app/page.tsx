@@ -85,7 +85,7 @@ export default function Home() {
 
           console.log(data);
 
-          const url = 'http://3.133.138.75:5000/calcular_pagos';
+          const url = 'http://164.68.101.193:5000/calcular_pagos';
 
           const requestOptions = {
               method: 'POST',
