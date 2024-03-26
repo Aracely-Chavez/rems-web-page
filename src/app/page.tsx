@@ -135,7 +135,7 @@ export default function Home() {
     const textToCopy = textFechas + '\n' + textPagos;
 
     if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(textToCopy);
+        navigator.clipboard.writeText(textToCopy);
     } else {
         // Use the 'out of viewport hidden text area' trick
         const textArea = document.createElement("textarea");
