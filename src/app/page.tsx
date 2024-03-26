@@ -90,7 +90,7 @@ export default function Home() {
               meses_corte: mesesCorte,
               monto_corte: pagosCorte,
               cant_estacionamientos: parseInt(valoresInputs['Cantidad de estacionamientos']),
-              m2_local: valoresInputs['M2 de oficinas'],
+              m2_local: valoresInputs['M2 total de oficinas'],
               ipc: {
                   "2019": 1.90,
                   "2020": 1.97,
@@ -119,7 +119,7 @@ export default function Home() {
                     setData(data);
                     setIsData(true);
                   }
-                  const ultimoPago = data["pagos"][data["pagos"].length - 1];
+                  const ultimoPago = data["pagos"][data["pagos"].length - 2];
                   resolve(ultimoPago);
               })
               .catch(error => {
@@ -201,10 +201,10 @@ export default function Home() {
               <InputLabeled handleInputChange={handleInputChange} label="Cantidad de estacionamientos" type="number" />
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="M2 de estacionamientos"/>
+              <InputLabeled handleInputChange={handleInputChange} label="M2 total de estacionamientos"/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="M2 de oficinas"/>
+              <InputLabeled handleInputChange={handleInputChange} label="M2 total de oficinas"/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
               <InputLabeled handleInputChange={handleInputChange} label="Cantidad de depósitos" type="number"/>
