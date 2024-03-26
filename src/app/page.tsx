@@ -134,12 +134,28 @@ export default function Home() {
     const textPagos = [valoresInputs['Razón Social *'],convertirFecha(valoresInputs['Fecha de inicio *']),convertirFecha(valoresInputs['Fecha de entrega *']),valoresInputs['Plazo (meses) *'],valoresInputs['Periodo de gracia (días) *'],...data.pagos].join('\t');
     const textToCopy = textFechas + '\n' + textPagos;
 
-    // Copiar al portapapeles
-    navigator.clipboard.writeText(textToCopy)
-      .catch((error) => {
-        console.error('Error al copiar al portapapeles:', error);
-        alert('Error al copiar al portapapeles. Consulte la consola para obtener más detalles.');
-      });
+    if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(textToCopy);
+    } else {
+        // Use the 'out of viewport hidden text area' trick
+        const textArea = document.createElement("textarea");
+        textArea.value = textToCopy;
+            
+        // Move textarea out of the viewport so it's not visible
+        textArea.style.position = "absolute";
+        textArea.style.left = "-999999px";
+            
+        document.body.prepend(textArea);
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+        } catch (error) {
+            console.error(error);
+        } finally {
+            textArea.remove();
+        }
+    }
   };
 
   return (
