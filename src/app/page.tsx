@@ -15,6 +15,23 @@ export default function Home() {
   const [data, setData] = useState({fechas: [], pagos: []});
   const [isData, setIsData] = useState(false);
 
+  function convertirFecha(fechaEnMMDDAAAA) {
+    // Dividir la fecha en sus componentes (mes, día y año)
+    var partes = fechaEnMMDDAAAA.split('-');
+    
+    // Crear un nuevo objeto Date con los componentes en el formato "mm-dd-aaaa"
+    var fecha = new Date(partes[0], partes[1] - 1, partes[2]); // El mes debe ser ajustado restando 1 ya que en JavaScript los meses van de 0 a 11
+    
+    // Obtener los componentes de la fecha en formato "dd-mm-aaaa"
+    var dia = fecha.getDate();
+    var mes = fecha.getMonth() + 1; // Se suma 1 ya que getMonth devuelve los meses de 0 a 11
+    var anio = fecha.getFullYear();
+    
+    // Formatear la fecha en el formato deseado "dd-mm-aaaa"
+    var fechaEnDDMMAAAA = (dia < 10 ? '0' : '') + dia + '-' + (mes < 10 ? '0' : '') + mes + '-' + anio;
+    
+    return fechaEnDDMMAAAA;
+}
 
   const agregarComponente = () => {
     setCantidadComponentes(cantidadComponentes + 1);
@@ -112,6 +129,19 @@ export default function Home() {
       });
   };
 
+  const handleCopy = () => {
+    const textFechas = ['Razón Social','Fecha de inicio','Fecha de entrega','Plazo (meses)','Periodo de gracia (días)',...data.fechas].join('\t');
+    const textPagos = [valoresInputs['Razón Social *'],convertirFecha(valoresInputs['Fecha de inicio *']),convertirFecha(valoresInputs['Fecha de entrega *']),valoresInputs['Plazo (meses) *'],valoresInputs['Periodo de gracia (días) *'],...data.pagos].join('\t');
+    const textToCopy = textFechas + '\n' + textPagos;
+
+    // Copiar al portapapeles
+    navigator.clipboard.writeText(textToCopy)
+      .catch((error) => {
+        console.error('Error al copiar al portapapeles:', error);
+        alert('Error al copiar al portapapeles. Consulte la consola para obtener más detalles.');
+      });
+  };
+
   return (
     <main className="flex relative w-full justify-center font-montserrat mb-7">
       <img src="/HeaderBackground.svg" alt="bg" className="absolute w-[100%] xl:-top-24 min-h-[400px] -top-6 -z-10" />
@@ -179,6 +209,7 @@ export default function Home() {
 
         {isData&&
         <div className ="flex flex-col">
+        <button onClick={() => handleCopy()} type="button" className="w-36 text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Copiar</button>
         <div className ="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className ="inline-block min-w-full py-2 sm:px-6 lg:px-8">
             <div className ="overflow-hidden">
