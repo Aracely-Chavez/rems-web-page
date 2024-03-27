@@ -16,10 +16,11 @@ export function InputLabeledIn({label,isSelect,handleSelectTipoPago,customKey, .
             {isSelect ? (
                 <select className="border-2 rounded-md border-black p-2 w-full" onChange={handleSelectTipoPago}>
                     <option value="fijo">Monto fijo</option>
-                    <option value="tasa">Tasa</option>
+                    <option value="tasa">Tasa o IPC (Máximo)</option>
                     <option value="xEstacionamiento">Por estacionamiento</option>
                     <option value="xM2">Por metro cuadrado</option>
-                    <option value="tasaIPC">Tasa o IPC (Máximo)</option>
+                    {//<option value="tasaIPC">Tasa o IPC (Máximo)</option>
+                    }
                 </select>
             ): (
             <InputPago

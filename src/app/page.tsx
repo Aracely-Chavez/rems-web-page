@@ -85,12 +85,12 @@ export default function Home() {
               razon_social: valoresInputs['Razón Social *'],
               plazo: parseInt(valoresInputs['Plazo (meses) *']),
               periodo_gracia: parseInt(valoresInputs['Periodo de gracia (días) *']),
-              fecha_inicio: valoresInputs['Fecha de inicio *'],
-              fecha_entrega: valoresInputs['Fecha de entrega *'],
+              fecha_inicio: valoresInputs['Fecha de entrega *'],
+              fecha_entrega: valoresInputs['Fecha de inicio *'],
               meses_corte: mesesCorte,
               monto_corte: pagosCorte,
               cant_estacionamientos: parseInt(valoresInputs['Cantidad de estacionamientos']),
-              m2_local: valoresInputs['M2 total de oficinas'],
+              m2_local: parseFloat(valoresInputs['M2 total de oficinas']),
               ipc: {
                   "2019": 1.90,
                   "2020": 1.97,
@@ -186,10 +186,10 @@ export default function Home() {
               <InputLabeled handleInputChange={handleInputChange} label="Razón Social *"/>
             </div>
             <div className="col-span-6 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Fecha de inicio *" type="date"/>
+              <InputLabeled handleInputChange={handleInputChange} label="Fecha de entrega *" type="date"/>
             </div>
             <div className="col-span-6 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Fecha de entrega *" type="date"/>
+              <InputLabeled handleInputChange={handleInputChange} label="Fecha de inicio *" type="date"/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
               <InputLabeled handleInputChange={handleInputChange} label="Plazo (meses) *" type="number"/>
