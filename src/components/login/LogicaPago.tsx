@@ -28,7 +28,7 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit}: LogicaP
         fijo: ['Monto'],
         tasa: ['Tasa'],
         xEstacionamiento: ['Monto base', 'switch', 'Costo x Est.'],
-        xM2: ['Mts. Cruadrados'],
+        xM2: ['Monto x M2'],
         tasaIPC: ['Tasa']
       };
 
