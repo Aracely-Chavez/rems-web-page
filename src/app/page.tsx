@@ -49,8 +49,8 @@ export default function Home() {
           if(logica["tipoPago"]=="xEstacionamiento"){
             lastEst=n;
           }
-          n = n + 1;
       }
+      n = n + 1;
     }
     console.log("ultimo Est: "+lastEst);
     setLastEstType(lastEst);
