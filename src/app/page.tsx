@@ -1,7 +1,7 @@
 // @ts-nocheck
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import { InputLabeled } from "@/components/ui/InputLabeled";
 import { LogicaPago } from "@/components/login/LogicaPago"
@@ -11,9 +11,15 @@ interface ValoresState {
 
 export default function Home() {
   const [cantidadComponentes, setCantidadComponentes] = useState(1);
+  const [indexes, setIndexes] = useState([0]);
   const [valoresInputs, setValoresInputs] = useState<ValoresState>({});
   const [data, setData] = useState({fechas: [], pagos: []});
   const [isData, setIsData] = useState(false);
+  const [lastEstType, setLastEstType] = useState(-1);
+
+  useEffect(() => {
+    ultimoTipoEstacionamiento();
+  },[valoresInputs])
 
   function convertirFecha(fechaEnMMDDAAAA) {
     // Dividir la fecha en sus componentes (mes, día y año)
@@ -33,14 +39,39 @@ export default function Home() {
     return fechaEnDDMMAAAA;
 }
 
+  const ultimoTipoEstacionamiento = () => {
+    var n = 0;
+    var lastEst = -1;
+    var logica;
+    for (var i = 0; i < cantidadComponentes; i++) {
+      if ("logica" + n in valoresInputs) {
+          logica = valoresInputs["logica" + n];
+          if(logica["tipoPago"]=="xEstacionamiento"){
+            lastEst=n;
+          }
+          n = n + 1;
+      }
+    }
+    console.log("ultimo Est: "+lastEst);
+    setLastEstType(lastEst);
+  };
+
   const agregarComponente = () => {
+    setIndexes(
+      [
+        ...indexes,
+        cantidadComponentes
+      ]
+    );
     setCantidadComponentes(cantidadComponentes + 1);
   };
 
-  const quitarComponente = () => {
-    if (cantidadComponentes > 0) {
-      setCantidadComponentes(cantidadComponentes - 1);
-    }
+  const quitarComponente = (index:number) => {
+    const nuevoArray = indexes.filter(elemento => elemento !== index);
+    const nuevoObjeto = { ...valoresInputs };
+    setIndexes(nuevoArray);
+    delete nuevoObjeto["logica" + index];
+    setValoresInputs(nuevoObjeto);
   };
 
   const handleInputChange = (index: string, value) => {
@@ -65,6 +96,7 @@ export default function Home() {
                   logica = valoresInputs["logica" + n];
                   n = n + 1;
               } else {
+                  n = n + 1;
                   continue;
               }
               mesesCorte.push(parseInt(logica['mes']))
@@ -75,7 +107,12 @@ export default function Home() {
               } else if (logica['tipoPago'] === 'xEstacionamiento') {
                   pagosCorte.push(parseFloat(logica['valores'][0]) + "," + parseFloat(logica['valores'][2]) + " estacionamiento");
               } else if (logica['tipoPago'] === 'xM2') {
+                if(logica['valores'].length == 1){
                   pagosCorte.push(parseFloat(logica['valores'][0]) + " m2");
+                }
+                else{
+                  pagosCorte.push(parseFloat(logica['valores'][0]) + " m2 estacionamiento t " + parseFloat(logica['valores'][1]));
+                }
               } else if (logica['tipoPago'] === 'tasaIPC') {
                 pagosCorte.push("ipc o tasa "+logica['valores'][0]+",99999");
             }
@@ -215,8 +252,8 @@ export default function Home() {
           <button onClick={agregarComponente} type="button" className="absolute top-5 md:top-6 right-0 md:right-3 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Agregar Fila</button>
           <h2 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl py-6">Lógica de pagos</h2>
           <div className="flex flex-col divide-y-2">
-            {Array.from({ length: cantidadComponentes }).map((_, index) => (
-              <LogicaPago key={index} customKey={index} handleInputChangeP={handleInputChange} handleSubmit={handleSubmit}/> // Usa un key único para cada componente
+            {indexes.map((index, _) => (
+              <LogicaPago lastEstType={lastEstType} key={index} customKey={index} handleInputChangeP={handleInputChange} handleSubmit={handleSubmit} quitarComponente={quitarComponente}/> // Usa un key único para cada componente
             ))}
           </div>
           <button onClick={() => handleSubmit(cantidadComponentes,true)} type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generar Pagos</button>
