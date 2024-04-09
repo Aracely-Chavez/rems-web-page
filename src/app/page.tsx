@@ -105,7 +105,8 @@ export default function Home() {
               } else if (logica['tipoPago'] === 'tasa') {
                   pagosCorte.push("tasa " + parseFloat(logica['valores'][0]) + ",99999");
               } else if (logica['tipoPago'] === 'xEstacionamiento') {
-                  pagosCorte.push(parseFloat(logica['valores'][0]) + "," + parseFloat(logica['valores'][2]) + " estacionamiento");
+                  //pagosCorte.push(parseFloat(logica['valores'][0]) + "," + parseFloat(logica['valores'][2]) + " estacionamiento");
+                  pagosCorte.push("0," + parseFloat(logica['valores'][0]) + " estacionamiento");
               } else if (logica['tipoPago'] === 'xM2') {
                 if(logica['valores'].length == 1){
                   pagosCorte.push(parseFloat(logica['valores'][0]) + " m2");
@@ -140,6 +141,7 @@ export default function Home() {
           console.log(data);
 
           const url = 'http://164.68.101.193:5000/calcular_pagos';
+          //const url = 'http://127.0.0.1:5000/calcular_pagos';
 
           const requestOptions = {
               method: 'POST',
@@ -266,22 +268,22 @@ export default function Home() {
         <div className ="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className ="inline-block min-w-full py-2 sm:px-6 lg:px-8">
             <div className ="overflow-hidden">
-              <table
-                className ="min-w-full text-left text-sm font-light text-surface dark:text-white">
-                <thead
-                  className ="border-b border-neutral-200 font-medium dark:border-white/10">
+              <table className="min-w-full text-left text-sm font-light text-surface dark:text-white">
+                <thead className="border-b border-neutral-200 font-medium dark:border-white/10">
                   <tr>
-                    <th scope="col" className ="px-6 py-4">Fecha</th>
-                    <th scope="col" className ="px-6 py-4">Monto de Pago</th>
+                    <th scope="col" className="px-6 py-4">Fecha</th>
+                    {data.fechas.map((fecha, index) => (
+                      <th key={index} className="px-6 py-4 whitespace-nowrap">{fecha}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {data.fechas.map((fecha, index) => (
-                    <tr className ="border-b border-neutral-200 dark:border-white/10" key={index}>
-                      <td className ="whitespace-nowrap px-6 py-4">{fecha}</td>
-                      <td className ="whitespace-nowrap px-6 py-4">{data.pagos[index]}</td>
-                    </tr>
-                  ))}
+                  <tr className="border-b border-neutral-200 dark:border-white/10">
+                    <td className="whitespace-nowrap px-6 py-4">Monto de Pago</td>
+                    {data.pagos.map((pago, index) => (
+                      <td key={index} className="whitespace-nowrap px-6 py-4">{pago}</td>
+                    ))}
+                  </tr>
                 </tbody>
               </table>
             </div>

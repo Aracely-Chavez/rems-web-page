@@ -33,9 +33,10 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstT
     },[])
 
     const valores = {
-        fijo: ['Monto'],
+        fijo: ['Monto','switch'],
         tasa: ['Tasa'],
-        xEstacionamiento: ['Monto base', 'switch', 'Costo x Est.'],
+        //xEstacionamiento: ['Monto base', 'switch', 'Costo x Est.'],
+        xEstacionamiento: ['Costo x Est.'],
         xM2: ['Monto x M2','switchEst'],
         tasaIPC: ['Tasa']
       };
