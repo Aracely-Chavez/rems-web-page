@@ -197,6 +197,43 @@ export default function Home() {
     }
   };
 
+  const savePago = () => {
+    const dataS = {
+      razon_social: valoresInputs['Razón Social *'],
+      plazo: parseInt(valoresInputs['Plazo (meses) *']),
+      periodo_gracia: parseInt(valoresInputs['Periodo de gracia (días) *']),
+      fecha_inicio: valoresInputs['Fecha de entrega *'],
+      fecha_entrega: valoresInputs['Fecha de inicio *'],
+      meses_corte: data.fechas,
+      monto_corte: data.pagos,
+      cant_estacionamientos: parseInt(valoresInputs['Cantidad de estacionamientos']),
+      m2_local: parseFloat(valoresInputs['M2 total de oficinas']),
+      ipc: {
+          "2019": 1.90,
+          "2020": 1.97,
+          "2021": 6.43,
+          "2022": 8.45,
+          "2023": 3.23
+      }
+
+    };
+    const url = 'http://164.68.101.193:5000/guardar_pagos';
+    //const url = 'http://127.0.0.1:5000/guardar_pagos';
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dataS)
+    };
+
+  fetch(url, requestOptions)
+      .catch(error => {
+          console.error('Error al realizar la solicitud de guardado:', error);
+          reject(error);
+      });
+  };
+
   return (
     <main className="flex relative w-full justify-center font-montserrat mb-7">
       <img src="/HeaderBackground.svg" alt="bg" className="absolute w-[100%] xl:-top-24 min-h-[400px] -top-6 -z-10" />
@@ -289,6 +326,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <button onClick={() => savePago()} type="button" className="w-36 mt-5 text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Guardar</button>
       </div>}
 
         
