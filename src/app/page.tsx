@@ -198,6 +198,17 @@ export default function Home() {
   };
 
   const savePago = () => {
+    var nexIndex = 0;
+    var n = 0;
+    var logica = [];
+    for (var i = 0; i < cantidadComponentes; i++) {
+      if ("logica" + n in valoresInputs) {
+          valoresInputs["logica" + n]['indice']=nexIndex;
+          logica.push(valoresInputs["logica" + n]);
+          nexIndex+=1;
+      }
+      n = n + 1;
+    }
     const dataS = {
       razon_social: valoresInputs['Razón Social *'],
       plazo: parseInt(valoresInputs['Plazo (meses) *']),
@@ -206,6 +217,7 @@ export default function Home() {
       fecha_entrega: valoresInputs['Fecha de inicio *'],
       meses_corte: data.fechas,
       monto_corte: data.pagos,
+      logica:logica,
       cant_estacionamientos: parseInt(valoresInputs['Cantidad de estacionamientos']),
       m2_local: parseFloat(valoresInputs['M2 total de oficinas']),
       ipc: {
@@ -217,8 +229,8 @@ export default function Home() {
       }
 
     };
-    const url = 'http://164.68.101.193:5000/guardar_pagos';
-    //const url = 'http://127.0.0.1:5000/guardar_pagos';
+    //const url = 'http://164.68.101.193:5000/guardar_pagos';
+    const url = 'http://127.0.0.1:5000/guardar_pagos';
     const requestOptions = {
       method: 'POST',
       headers: {
