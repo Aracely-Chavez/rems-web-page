@@ -229,8 +229,8 @@ export default function Home() {
       }
 
     };
-    //const url = 'http://164.68.101.193:5000/guardar_pagos';
-    const url = 'http://127.0.0.1:5000/guardar_pagos';
+    const url = 'http://164.68.101.193:5000/guardar_pagos';
+    //const url = 'http://127.0.0.1:5000/guardar_pagos';
     const requestOptions = {
       method: 'POST',
       headers: {
