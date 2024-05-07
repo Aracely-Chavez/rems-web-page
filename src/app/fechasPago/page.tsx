@@ -1,15 +1,23 @@
 // @ts-nocheck
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 
 import { useSearchParams } from 'next/navigation'
 
 
 export default function FechasPago() {
-    const searchParams = useSearchParams();
-  
-    const search = searchParams.get('contratos');
+  return (
+      <Suspense fallback={<div>Loading...</div>}>
+          <FechasPagoContent />
+      </Suspense>
+  );
+}
+
+
+function FechasPagoContent() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get('contratos');
 
     const [contratos, setContratos] = useState<[]>([]);
     const [fechas, setFechas] = useState<string[]>([]);
