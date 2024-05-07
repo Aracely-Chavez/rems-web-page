@@ -26,8 +26,8 @@ function FechasPagoContent() {
 
 
     useEffect(() => {
-        //const url = 'http://164.68.101.193:5000/calcular_pagos';
-        const url = 'http://127.0.0.1:5000/contratos_por_ids?ids=' + search;
+        const url = 'http://164.68.101.193:5000/contratos_por_ids?ids='+ search;
+        //const url = 'http://127.0.0.1:5000/contratos_por_ids?ids=' + search;
 
         const fetchData = async () => {
           try {
