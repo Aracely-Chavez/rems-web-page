@@ -2,7 +2,6 @@
 "use client";
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 const ContratoCard = ({ contrato, isChecked, onToggle }) => {
   const { id, razon_social, fecha_inicio } = contrato;
@@ -40,20 +39,6 @@ const ContratosScreen = ( ) => {
   const [error, setError] = useState(null);
   const [cargando, setCargando] = useState(true);
 
-  const handleEnviarSeleccion = () => {
-    // Aquí puedes enviar los IDs de los contratos seleccionados a la API
-    console.log('Contratos seleccionados:', selectedContratos);
-    // Lógica para enviar los IDs seleccionados a la API
-
-    // Obtener instancia del enrutador de Next.js
-    const router = useRouter();
-
-    // Convertir los contratos seleccionados a una cadena de query string
-    const queryString = selectedContratos.join(',');
-
-    // Navegar a la página FechasPago con los contratos seleccionados como query string
-    router.push(`/fechasPago?contratos=${queryString}`);
-  };
 
   useEffect(() => {
     //const url = 'http://164.68.101.193:5000/calcular_pagos';
