@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import { InputLabeled } from "@/components/ui/InputLabeled";
 import { LogicaPago } from "@/components/login/LogicaPago"
+import { Navbar } from "@/components/ui/Navbar";
 interface ValoresState {
   [key: string]: string;
 }
@@ -250,6 +251,7 @@ export default function Home() {
     <main className="flex relative w-full justify-center font-montserrat mb-7">
       <img src="/HeaderBackground.svg" alt="bg" className="absolute w-[100%] xl:-top-24 min-h-[400px] -top-6 -z-10" />
       <div className="container px-8">
+        <Navbar />
         <div className="flex h-[280px] sm:h-[330px] md:h-[360px] lg:h-[410px] 2xl:h-[520px]  justify-center items-center">
           <h1 className="font-bold text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Asset Management</h1>
         </div>

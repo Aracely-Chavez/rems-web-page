@@ -2,6 +2,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Navbar } from "@/components/ui/Navbar";
 
 const ContratoCard = ({ contrato, isChecked, onToggle }) => {
   const { id, razon_social, fecha_inicio } = contrato;
@@ -77,6 +78,7 @@ const ContratosScreen = ( ) => {
     <main className="flex relative w-full justify-center font-montserrat mb-7">
       <img src="/HeaderBackground.svg" alt="bg" className="absolute w-[100%] xl:-top-24 min-h-[400px] -top-6 -z-10" />
       <div className="container px-8">
+        <Navbar />
         <div className="flex h-[280px] sm:h-[330px] md:h-[360px] lg:h-[410px] 2xl:h-[520px]  justify-center items-center">
           <h1 className="font-bold text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Fechas de pago</h1>
         </div>

@@ -15,7 +15,10 @@ const config: Config = {
       },
       fontFamily: {
         'montserrat': ['Montserrat']
-      }
+      },
+      colors: {
+        'blue-asset': '#184C99',
+      },
     },
   },
   plugins: [],

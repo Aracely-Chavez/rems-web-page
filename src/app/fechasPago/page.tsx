@@ -2,7 +2,7 @@
 "use client";
 
 import React, { Suspense, useEffect, useState } from 'react';
-
+import { Navbar } from "@/components/ui/Navbar";
 import { useSearchParams } from 'next/navigation'
 
 
@@ -94,6 +94,7 @@ function FechasPagoContent() {
     <main className="flex relative w-full justify-center font-montserrat mb-7">
       <img src="/HeaderBackground.svg" alt="bg" className="absolute w-[100%] xl:-top-24 min-h-[400px] -top-6 -z-10" />
       <div className="container px-8">
+        <Navbar />
         <div className="flex h-[280px] sm:h-[330px] md:h-[360px] lg:h-[410px] 2xl:h-[520px]  justify-center items-center">
           <h1 className="font-bold text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Fechas de pago</h1>
         </div>
@@ -103,7 +104,7 @@ function FechasPagoContent() {
                 <table className='min-w-full text-left text-sm font-light text-surface dark:text-white'>
                     <thead className="border-b border-neutral-200 font-medium dark:border-white/10">
                         <tr>
-                        <th className="px-6 py-4">Contrato</th>
+                        <th className="px-6 py-4">Razón Social</th>
                         {fechas.map(fecha => (
                             <th key={fecha} className="px-6 py-4 whitespace-nowrap">{fecha}</th>
                         ))}
@@ -112,10 +113,11 @@ function FechasPagoContent() {
                     <tbody>
                         {contratos.map(contrato => (
                         <tr key={contrato.id} className="border-b border-neutral-200 dark:border-white/10">
-                            <td className="whitespace-nowrap px-6 py-4">{contrato.nombre}</td>
+                            <td className="whitespace-nowrap px-6 py-4">{contrato.razon_social}</td>
                             {fechas.map(fecha => {
                             const pago = contrato.pagos.find(p => p.fecha === fecha);
-                            return <td key={fecha} className="whitespace-nowrap px-6 py-4">{pago ? pago.monto : '-'}</td>;
+                            const esPG = pago ? pago.monto == 0 ? true : false : false;
+                            return <td key={fecha} className={`whitespace-nowrap px-6 py-4 ${esPG ? 'bg-green-200' : ''}`}>{pago ? esPG ? 'PG' : pago.monto : '-'}</td>;
                             })}
                         </tr>
                         ))}
