@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Navbar } from "@/components/ui/Navbar";
+import { format, parse, parseISO } from 'date-fns';
+
 
 const ContratoCard = ({ contrato, isChecked, onToggle }) => {
-  const { id, razon_social, fecha_inicio } = contrato;
+  const { id, razon_social, fecha_inicio, fecha_creacion } = contrato;
 
   const handleToggle = () => {
     onToggle(id);
@@ -15,7 +17,8 @@ const ContratoCard = ({ contrato, isChecked, onToggle }) => {
     <div className="border rounded-lg shadow-lg p-4 bg-white flex justify-between items-center">
         <div>
             <h3 className="text-xl font-semibold mb-2">{razon_social}</h3>
-            <p className="text-gray-600">Fecha de inicio: {fecha_inicio}</p>
+            <p className="text-gray-600">Fecha de inicio: {format(parseISO(fecha_inicio), 'dd/MM/yyyy')}</p>
+            <p className="text-gray-600">Fecha de creación: {format(new Date(fecha_creacion), 'dd/MM/yyyy HH:mm:ss a')}</p>
             {/* Otros datos del contrato */}
             {/* ... */}
         </div>
@@ -39,6 +42,16 @@ const ContratosScreen = ( ) => {
   const [selectedContratos, setSelectedContratos] = useState([]);
   const [error, setError] = useState(null);
   const [cargando, setCargando] = useState(true);
+  const [sortOption, setSortOption] = useState('razon_social');
+  const [isAscending, setIsAscending] = useState(true);
+
+  const handleSortOptionChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
+  const handleSortOrderChange = () => {
+    setIsAscending(!isAscending);
+  };
 
 
   useEffect(() => {
@@ -55,6 +68,7 @@ const ContratosScreen = ( ) => {
           throw new Error('Error al obtener los datos');
         }
         const data = await response.json();
+        console.log(data)
         setContratos(data);
         setCargando(false);
       } catch (error) {
@@ -73,6 +87,21 @@ const ContratosScreen = ( ) => {
     );
   };
 
+  const sortedList = [...contratos].sort((a, b) => {
+    let aValue, bValue;
+
+    if (sortOption === 'fecha_creacion') {
+      aValue = new Date(a[sortOption]);
+      bValue = new Date(b[sortOption]);
+    } else {
+      aValue = a[sortOption];
+      bValue = b[sortOption];
+    }
+
+    if (aValue < bValue) return isAscending ? -1 : 1;
+    if (aValue > bValue) return isAscending ? 1 : -1;
+    return 0;
+  });
 
   return (
     <main className="flex relative w-full justify-center font-montserrat mb-7">
@@ -84,8 +113,20 @@ const ContratosScreen = ( ) => {
         </div>
             <div>
             <h1>Contratos</h1>
+            <div>
+              <label>Ordenar por:</label>
+              <select value={sortOption} onChange={handleSortOptionChange}>
+                <option value="razon_social">Razón Social</option>
+                <option value="fecha_creacion">Fecha de Creación</option>
+                {/* Agrega más opciones según sea necesario */}
+              </select>
+              <button onClick={handleSortOrderChange}
+              className=" bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded">
+                {isAscending ? 'Ascendente' : 'Descendente'}
+              </button>
+            </div>
             <div className="contrato-container my-8">
-                {contratos.map((contrato) => (
+                {sortedList.map((contrato) => (
                 <ContratoCard
                     key={contrato.id}
                     contrato={contrato}
