@@ -34,10 +34,11 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstT
 
     const valores = {
         fijo: ['Monto','switch'],
-        tasa: ['Tasa'],
+        tasa: ['Tasa','Tipo'],
         //xEstacionamiento: ['Monto base', 'switch', 'Costo x Est.'],
         xEstacionamiento: ['Costo x Est.'],
-        xM2: ['Monto x M2','switchEst'],
+        xDeposito: ['Costo x Est.'],
+        xM2: ['Monto x M2', 'Asociado a'],//,'switchEst'],
         tasaIPC: ['Tasa']
       };
 
@@ -48,6 +49,22 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstT
         setChecked(false);
         setCheckedEst(false);
         handleLogicaChange("tipoPago", event.target.value);
+        if(event.target.value=="tasa"){
+          setValoresInputs(prevState => {
+            const newState = [...prevState];
+            newState[1] = "total";
+            handleLogicaChange("valores",newState);
+            return newState;
+          });
+        }
+        else if(event.target.value=="xM2"){
+          setValoresInputs(prevState => {
+            const newState = [...prevState];
+            newState[1] = "xM2Est";
+            handleLogicaChange("valores",newState);
+            return newState;
+          });
+        }
         setFlagEst(prevValue => prevValue + 1);
     };
 
@@ -128,7 +145,36 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstT
               <FormControlLabel control={<Switch checked={checked} onChange={handleSwitchChange}/>} label="Usar último monto" />
             </div>
           ) 
-          : 
+          :
+          valor === 'Tipo' ? (
+            <div className='py-3 border-gray-300 relative'>
+              <label htmlFor="Tipo" className='absolute block text-sm bg-white lg:text-base font-semibold top-0 left-3 px-2'>Tipo</label>
+              <div>
+                <select className="border-2 rounded-md border-black p-2 w-full" data-key={index} onChange={handleInputChange}>
+                    <option value="total">Total</option>
+                    <option value="xM2Est">x M2 Estacionamiento</option>
+                    <option value="xM2Dep">x M2 Deposito</option>
+                    <option value="xM2Ofi">x M2 Oficina</option>
+                    <option value="xEst">x # Estacionamiento</option>
+                    <option value="xDep">x # Deposito</option>
+                </select>
+              </div>
+              
+          </div>
+          ): 
+          valor === 'Asociado a' ? (
+            <div className='py-3 border-gray-300 relative'>
+              <label htmlFor="Asociado a" className='absolute block text-sm bg-white lg:text-base font-semibold top-0 left-3 px-2'>Asociado a</label>
+              <div>
+                <select className="border-2 rounded-md border-black p-2 w-full" data-key={index} onChange={handleInputChange}>
+                    <option value="xM2Est">Estacionamientos</option>
+                    <option value="xM2Dep">Depositos</option>
+                    <option value="xM2Ofi">Oficinas</option>
+                </select>
+              </div>
+              
+          </div>
+          ): 
           valor === 'switchEst' && lastEstType!=-1 && customKey > lastEstType?
           (
               <div className='mt-3'>

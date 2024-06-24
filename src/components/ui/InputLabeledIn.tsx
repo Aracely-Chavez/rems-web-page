@@ -18,6 +18,7 @@ export function InputLabeledIn({label,isSelect,handleSelectTipoPago,customKey, .
                     <option value="fijo">Monto fijo</option>
                     <option value="tasa">Tasa o IPC (Máximo)</option>
                     <option value="xEstacionamiento">Por estacionamiento</option>
+                    <option value="xDeposito">Por depósito</option>
                     <option value="xM2">Por metro cuadrado</option>
                     {//<option value="tasaIPC">Tasa o IPC (Máximo)</option>
                     }

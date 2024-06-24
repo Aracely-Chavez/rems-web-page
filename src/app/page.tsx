@@ -22,6 +22,10 @@ export default function Home() {
     ultimoTipoEstacionamiento();
   },[valoresInputs])
 
+  useEffect(() => {
+    handleInputChange("moneda", "Dolares");
+  },[])
+
   function convertirFecha(fechaEnMMDDAAAA) {
     // Dividir la fecha en sus componentes (mes, día y año)
     var partes = fechaEnMMDDAAAA.split('-');
@@ -104,17 +108,14 @@ export default function Home() {
               if (logica['tipoPago'] === 'fijo') {
                   pagosCorte.push(parseFloat(logica['valores'][0]));
               } else if (logica['tipoPago'] === 'tasa') {
-                  pagosCorte.push("tasa " + parseFloat(logica['valores'][0]) + ",99999");
+                  pagosCorte.push("tasa "+logica['valores'][1] + " " + parseFloat(logica['valores'][0]) + ",99999");
               } else if (logica['tipoPago'] === 'xEstacionamiento') {
                   //pagosCorte.push(parseFloat(logica['valores'][0]) + "," + parseFloat(logica['valores'][2]) + " estacionamiento");
                   pagosCorte.push("0," + parseFloat(logica['valores'][0]) + " estacionamiento");
+              } else if (logica['tipoPago'] === 'xDeposito') {
+                pagosCorte.push(parseFloat(logica['valores'][0]) + " deposito");
               } else if (logica['tipoPago'] === 'xM2') {
-                if(logica['valores'].length == 1){
-                  pagosCorte.push(parseFloat(logica['valores'][0]) + " m2");
-                }
-                else{
-                  pagosCorte.push(parseFloat(logica['valores'][0]) + " m2 estacionamiento t " + parseFloat(logica['valores'][1]));
-                }
+                pagosCorte.push(parseFloat(logica['valores'][0])+" "+logica['valores'][1] + " m2");
               } else if (logica['tipoPago'] === 'tasaIPC') {
                 pagosCorte.push("ipc o tasa "+logica['valores'][0]+",99999");
             }
@@ -129,7 +130,10 @@ export default function Home() {
               meses_corte: mesesCorte,
               monto_corte: pagosCorte,
               cant_estacionamientos: parseInt(valoresInputs['Cantidad de estacionamientos']),
+              cant_depositos: parseInt(valoresInputs['Cantidad de depósitos']),
+              m2_estacionamientos: parseFloat(valoresInputs['M2 total de estacionamientos']),
               m2_local: parseFloat(valoresInputs['M2 total de oficinas']),
+              m2_depositos: parseFloat(valoresInputs['M2 total de depósitos']),
               ipc: {
                   "2019": 1.90,
                   "2020": 1.97,
@@ -141,8 +145,8 @@ export default function Home() {
 
           console.log(data);
 
-          const url = 'http://164.68.101.193:5000/calcular_pagos';
-          //const url = 'http://127.0.0.1:5000/calcular_pagos';
+          //const url = 'http://164.68.101.193:5000/calcular_pagos';
+          const url = 'http://127.0.0.1:5000/calcular_pagos';
 
           const requestOptions = {
               method: 'POST',
@@ -220,7 +224,11 @@ export default function Home() {
       monto_corte: data.pagos,
       logica:logica,
       cant_estacionamientos: parseInt(valoresInputs['Cantidad de estacionamientos']),
+      cant_depositos: parseInt(valoresInputs['Cantidad de depósitos']),
+      m2_estacionamientos: parseFloat(valoresInputs['M2 total de estacionamientos']),
       m2_local: parseFloat(valoresInputs['M2 total de oficinas']),
+      m2_depositos: parseFloat(valoresInputs['M2 total de depósitos']),
+      moneda: valoresInputs['moneda'],
       ipc: {
           "2019": 1.90,
           "2020": 1.97,
@@ -230,8 +238,8 @@ export default function Home() {
       }
 
     };
-    const url = 'http://164.68.101.193:5000/guardar_pagos';
-    //const url = 'http://127.0.0.1:5000/guardar_pagos';
+    //const url = 'http://164.68.101.193:5000/guardar_pagos';
+    const url = 'http://127.0.0.1:5000/guardar_pagos';
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -240,11 +248,21 @@ export default function Home() {
       body: JSON.stringify(dataS)
     };
 
-  fetch(url, requestOptions)
-      .catch(error => {
-          console.error('Error al realizar la solicitud de guardado:', error);
-          reject(error);
-      });
+    fetch(url, requestOptions)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta de la solicitud de guardado');
+        }
+        return response.json(); // o response.text() dependiendo de la respuesta esperada
+    })
+    .then(data => {
+        alert('Registro correcto');
+        // Puedes agregar aquí cualquier otra lógica que necesites realizar con los datos
+    })
+    .catch(error => {
+        console.error('Error al realizar la solicitud de guardado:', error);
+        alert('Hubo un error al realizar la solicitud de guardado');
+    });
   };
 
   return (
@@ -298,6 +316,18 @@ export default function Home() {
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
               <InputLabeled handleInputChange={handleInputChange} label="Cantidad de depósitos" type="number"/>
+            </div>
+            <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
+              <InputLabeled handleInputChange={handleInputChange} label="M2 total de depósitos" type="number"/>
+            </div>
+            <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
+              <div className='relative flex flex-col justify-between h-full'>
+                <label htmlFor="Moneda" className='block my-2 lg:text-lg font-semibold'>Moneda</label>
+                <select className="border-2 rounded-md border-black p-2 w-full" onChange={(event) => handleInputChange("moneda",event.target.value)}>
+                    <option value="Dolares">Dólares</option>
+                    <option value="Soles">Soles</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
