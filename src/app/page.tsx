@@ -362,7 +362,7 @@ export default function Home() {
                   <tr className="border-b border-neutral-200 dark:border-white/10">
                     <td className="whitespace-nowrap px-6 py-4">Monto de Pago</td>
                     {data.pagos.map((pago, index) => {
-                      const montoRedondeado = parseFloat(pago.toFixed(2));
+                      const montoRedondeado = Math.round((pago + Number.EPSILON) * 100) / 100;
                       // Si es el primer elemento, no hay monto anterior para comparar
                       if (index === 0) {
                         return (
@@ -379,7 +379,7 @@ export default function Home() {
                         );
                       }
 
-                      const montoAnterior = parseFloat(data.pagos[index - 1].toFixed(2));
+                      const montoAnterior = Math.round((data.pagos[index - 1] + Number.EPSILON) * 100) / 100;
                       const claseFondo = montoRedondeado !== montoAnterior ? 'bg-orange-200' : '';
 
                       return (

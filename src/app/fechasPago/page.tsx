@@ -141,7 +141,7 @@ function FechasPagoContent() {
                               </td>
                             );
                           })}
-                          <td className="whitespace-nowrap px-6 py-4 font-bold">{parseFloat(totalMonto.toFixed(2))}</td>
+                          <td className="whitespace-nowrap px-6 py-4 font-bold">{Math.round((totalMonto + Number.EPSILON) * 100) / 100}</td>
                         </tr>
                       );
                     })}
