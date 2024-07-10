@@ -73,7 +73,7 @@ function FechasPagoContent() {
         // Generar todas las fechas entre la más antigua y la más reciente, solo el primer día de cada mes
         const fechaInicio = new Date(fechasOrdenadas[0]);
         const fechaFin = new Date(fechasOrdenadas[fechasOrdenadas.length - 1]);
-
+        fechaFin.setDate(fechaFin.getDate() + 2);
         const fechasIntermedias: string[] = [];
         let fecha = new Date(fechaInicio);
         while (fecha <= fechaFin) {
@@ -89,6 +89,8 @@ function FechasPagoContent() {
     if (cargando) {
     return <div>Cargando...</div>;
     }
+  
+  let valorAnterior = null;
 
   return (
     <main className="flex relative w-full justify-center font-montserrat mb-7">
@@ -104,23 +106,45 @@ function FechasPagoContent() {
                 <table className='min-w-full text-left text-sm font-light text-surface dark:text-white'>
                     <thead className="border-b border-neutral-200 font-medium dark:border-white/10">
                         <tr>
-                        <th className="px-6 py-4">Razón Social</th>
-                        {fechas.map(fecha => (
-                            <th key={fecha} className="px-6 py-4 whitespace-nowrap">{fecha}</th>
-                        ))}
+                          <th className="px-6 py-4">Razón Social</th>
+                          <th className="px-6 py-4">Moneda</th>
+                          <th className="px-6 py-4">Plazo</th>
+                          {fechas.map(fecha => (
+                              <th key={fecha} className="px-6 py-4 whitespace-nowrap">{fecha}</th>
+                          ))}
+                          <th className="px-6 py-4 font-bold">Total</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {contratos.map(contrato => (
+                    {contratos.map(contrato => {
+                      let valorAnterior = '-'; // Inicializa valorAnterior para cada contrato
+                      const totalMonto = contrato.pagos.reduce((suma, pago) => suma + pago.monto, 0);
+                      return (
                         <tr key={contrato.id} className="border-b border-neutral-200 dark:border-white/10">
-                            <td className="whitespace-nowrap px-6 py-4">{contrato.razon_social}</td>
-                            {fechas.map(fecha => {
+                          <td className="whitespace-nowrap px-6 py-4">{contrato.razon_social}</td>
+                          <td className="whitespace-nowrap px-6 py-4">{contrato.moneda}</td>
+                          <td className="whitespace-nowrap px-6 py-4">{contrato.plazo}</td>
+                          {fechas.map(fecha => {
                             const pago = contrato.pagos.find(p => p.fecha === fecha);
-                            const esPG = pago ? pago.monto == 0 ? true : false : false;
-                            return <td key={fecha} className={`whitespace-nowrap px-6 py-4 ${esPG ? 'bg-green-200' : ''}`}>{pago ? esPG ? 'PG' : pago.monto : '-'}</td>;
-                            })}
+                            const esPG = pago ? pago.monto == 0 : false;
+                            const monto = pago ? (esPG ? 'PG' : pago.monto) : '-';
+
+                            // Comprueba si el valor actual es diferente al valor anterior
+                            const claseFondo = monto !== valorAnterior ? 'bg-orange-200' : '';
+
+                            // Actualiza el valor anterior para la próxima iteración
+                            valorAnterior = monto;
+
+                            return (
+                              <td key={fecha} className={`whitespace-nowrap px-6 py-4 ${esPG ? 'bg-green-200' : claseFondo}`}>
+                                {monto}
+                              </td>
+                            );
+                          })}
+                          <td className="whitespace-nowrap px-6 py-4 font-bold">{parseFloat(totalMonto.toFixed(2))}</td>
                         </tr>
-                        ))}
+                      );
+                    })}
                     </tbody>
                     </table>
                 </div>

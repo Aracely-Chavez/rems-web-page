@@ -361,9 +361,33 @@ export default function Home() {
                 <tbody>
                   <tr className="border-b border-neutral-200 dark:border-white/10">
                     <td className="whitespace-nowrap px-6 py-4">Monto de Pago</td>
-                    {data.pagos.map((pago, index) => (
-                      <td key={index} className="whitespace-nowrap px-6 py-4">{pago}</td>
-                    ))}
+                    {data.pagos.map((pago, index) => {
+                      const montoRedondeado = parseFloat(pago.toFixed(2));
+                      // Si es el primer elemento, no hay monto anterior para comparar
+                      if (index === 0) {
+                        return (
+                          <td key={index} className="whitespace-nowrap px-6 py-4">
+                            {montoRedondeado}
+                          </td>
+                        );
+                      }
+                      if (index === data.pagos.length - 1) {
+                        return (
+                          <td key={index} className="whitespace-nowrap px-6 py-4 font-bold">
+                            {montoRedondeado}
+                          </td>
+                        );
+                      }
+
+                      const montoAnterior = parseFloat(data.pagos[index - 1].toFixed(2));
+                      const claseFondo = montoRedondeado !== montoAnterior ? 'bg-orange-200' : '';
+
+                      return (
+                        <td key={index} className={`whitespace-nowrap px-6 py-4 ${claseFondo}`}>
+                          {montoRedondeado}
+                        </td>
+                      );
+                    })}
                   </tr>
                 </tbody>
               </table>

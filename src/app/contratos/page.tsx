@@ -40,6 +40,7 @@ const ContratoCard = ({ contrato, isChecked, onToggle }) => {
 const ContratosScreen = ( ) => {
   const [contratos, setContratos] = useState<[]>([]);
   const [selectedContratos, setSelectedContratos] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
   const [error, setError] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [sortOption, setSortOption] = useState('razon_social');
@@ -102,6 +103,19 @@ const ContratosScreen = ( ) => {
     if (aValue > bValue) return isAscending ? 1 : -1;
     return 0;
   });
+
+  const handleDeleteClick = () => {
+    setShowPopup(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deletePagos();
+    setShowPopup(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowPopup(false);
+  };
 
   const deletePagos = () => {
     const url = 'http://164.68.101.193:5000/eliminar_contratos';
@@ -169,10 +183,29 @@ const ContratosScreen = ( ) => {
                     className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Ir a Fechas de Pago
                 </Link>
-                <button onClick={() => deletePagos()} type="button" className="w-36 text-white bg-red-700 py-2 px-4 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Eliminar</button>
+                <button onClick={handleDeleteClick} type="button" className="w-36 text-white bg-red-700 py-2 px-4 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Eliminar</button>
               </div>
             </div>
         </div>
+        {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">¿Realmente quiere eliminar?</h2>
+            <div className="flex justify-end">
+              <button 
+                onClick={handleCancelDelete} 
+                className="mr-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg focus:outline-none">
+                Cancelar
+              </button>
+              <button 
+                onClick={handleConfirmDelete} 
+                className="px-4 py-2 bg-red-700 text-white hover:bg-red-800 rounded-lg focus:outline-none">
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 };
