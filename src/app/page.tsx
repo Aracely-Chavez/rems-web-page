@@ -362,6 +362,14 @@ export default function Home() {
                   <tr className="border-b border-neutral-200 dark:border-white/10">
                     <td className="whitespace-nowrap px-6 py-4">Monto de Pago</td>
                     {data.pagos.map((pago, index) => {
+                      if (pago === 'PG') {
+                        return (
+                          <td key={index} className="whitespace-nowrap px-6 py-4 bg-green-200">
+                            {pago}
+                          </td>
+                        );
+                      }
+
                       const montoRedondeado = Math.round((pago + Number.EPSILON) * 100) / 100;
                       // Si es el primer elemento, no hay monto anterior para comparar
                       if (index === 0) {
