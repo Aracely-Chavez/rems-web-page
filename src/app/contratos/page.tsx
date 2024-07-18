@@ -23,6 +23,10 @@ const ContratoCard = ({ contrato, isChecked, onToggle }) => {
             {/* ... */}
         </div>
         <div className="ml-4">
+            <Link href={{ pathname: '/contratoEdit', query: { contrato: id } }}
+                className=" bg-blue-500 hover:bg-blue-700 h-6 text-white font-bold py-2 px-4 mx-6 rounded">
+                Editar
+            </Link>
             <label className="inline-flex items-center">
             <input
                 type="checkbox"

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { InputPago } from './InputPago'
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {

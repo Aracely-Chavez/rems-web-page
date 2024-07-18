@@ -35,7 +35,7 @@ function ContratoEditContent() {
   },[])
 
   function loadInitialData(){
-    const url = 'http://127.0.0.1:5000/contrato_por_id?id='+ search;
+    const url = 'http://164.68.101.193:5000/contrato_por_id?id='+ search;
         //const url = 'http://127.0.0.1:5000/contratos_por_ids?ids=' + search;
 
         const fetchData = async () => {
