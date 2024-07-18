@@ -1,26 +1,66 @@
 // @ts-nocheck
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import Image from "next/image";
 import { InputLabeled } from "@/components/ui/InputLabeled";
 import { LogicaPago } from "@/components/login/LogicaPago"
 import { Navbar } from "@/components/ui/Navbar";
+import { useSearchParams } from 'next/navigation'
 interface ValoresState {
   [key: string]: string;
 }
 
-export default function Home() {
-  const [cantidadComponentes, setCantidadComponentes] = useState(1);
-  const [indexes, setIndexes] = useState([0]);
-  const [valoresInputs, setValoresInputs] = useState<ValoresState>({});
-  const [data, setData] = useState({fechas: [], pagos: []});
-  const [isData, setIsData] = useState(false);
-  const [lastEstType, setLastEstType] = useState(-1); //En desuso
+export default function ContratoEdit() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ContratoEditContent />
+        </Suspense>
+    );
+  }
+
+
+function ContratoEditContent() {
+    const searchParams = useSearchParams();
+    const search = searchParams.get('contrato');
+    const [cantidadComponentes, setCantidadComponentes] = useState(1);
+    const [indexes, setIndexes] = useState([]);
+    const [valoresInputs, setValoresInputs] = useState<ValoresState>({});
+    const [data, setData] = useState({fechas: [], pagos: []});
+    const [isData, setIsData] = useState(false);
+    const [lastEstType, setLastEstType] = useState(-1); //En desuso
 
   useEffect(() => {
-    handleInputChange("moneda", "Dolares");
+    loadInitialData();
   },[])
+
+  function loadInitialData(){
+    const url = 'http://127.0.0.1:5000/contrato_por_id?id='+ search;
+        //const url = 'http://127.0.0.1:5000/contratos_por_ids?ids=' + search;
+
+        const fetchData = async () => {
+          try {
+            const requestOptions = {
+              method: 'GET',
+            };
+            const response = await fetch(url, requestOptions);
+            if (!response.ok) {
+              throw new Error('Error al obtener los datos');
+            }
+            const resp = await response.json();
+            console.log(resp);
+            setValoresInputs(resp.valores);
+            //setData(resp.data);
+            //setIsData(true);
+            setCantidadComponentes(resp.cantidadComponentes);
+            setIndexes(resp.indexes)
+          } catch (error) {
+            alert("Hubo un error al buscar el contrato")
+          }
+        };
+    
+        fetchData();
+  }
 
   function convertirFecha(fechaEnMMDDAAAA) {
     // Dividir la fecha en sus componentes (mes, día y año)
@@ -121,8 +161,8 @@ export default function Home() {
               razon_social: valoresInputs['Razón Social *'],
               plazo: parseInt(valoresInputs['Plazo (meses) *']),
               periodo_gracia: parseInt(valoresInputs['Periodo de gracia (días) *']),
-              fecha_inicio: valoresInputs['Fecha de inicio *'],
-              fecha_entrega: valoresInputs['Fecha de entrega *'],
+              fecha_inicio: valoresInputs['Fecha de entrega *'],
+              fecha_entrega: valoresInputs['Fecha de inicio *'],
               meses_corte: mesesCorte,
               monto_corte: pagosCorte,
               cant_estacionamientos: parseInt(valoresInputs['Cantidad de estacionamientos']),
@@ -214,8 +254,8 @@ export default function Home() {
       razon_social: valoresInputs['Razón Social *'],
       plazo: parseInt(valoresInputs['Plazo (meses) *']),
       periodo_gracia: parseInt(valoresInputs['Periodo de gracia (días) *']),
-      fecha_inicio: valoresInputs['Fecha de inicio *'],
-      fecha_entrega: valoresInputs['Fecha de entrega *'],
+      fecha_inicio: valoresInputs['Fecha de entrega *'],
+      fecha_entrega: valoresInputs['Fecha de inicio *'],
       meses_corte: data.fechas,
       monto_corte: data.pagos,
       logica:logica,
@@ -287,34 +327,34 @@ export default function Home() {
           <h2 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl py-6">Datos Generales</h2>
           <div className="grid grid-flow-row grid-cols-12 w-full gap-x-3 sm:gap-x-4 items-stretch">
             <div className="col-span-12 xl:col-span-8">
-              <InputLabeled handleInputChange={handleInputChange} label="Razón Social *"/>
+              <InputLabeled handleInputChange={handleInputChange} label="Razón Social *" value={valoresInputs['Razón Social *'] || ''}/>
             </div>
             <div className="col-span-6 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Fecha de entrega *" type="date"/>
+              <InputLabeled handleInputChange={handleInputChange} label="Fecha de entrega *" type="date" value={valoresInputs['Fecha de entrega *'] || ''}/>
             </div>
             <div className="col-span-6 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Fecha de inicio *" type="date"/>
+              <InputLabeled handleInputChange={handleInputChange} label="Fecha de inicio *" type="date" value={valoresInputs['Fecha de inicio *'] || ''}/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Plazo (meses) *" type="number"/>
+              <InputLabeled handleInputChange={handleInputChange} label="Plazo (meses) *" type="number" value={valoresInputs['Plazo (meses) *'] || ''}/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Periodo de gracia (días) *" type="number"/>
+              <InputLabeled handleInputChange={handleInputChange} label="Periodo de gracia (días) *" type="number" value={valoresInputs['Periodo de gracia (días) *'] || ''}/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Cantidad de estacionamientos" type="number" />
+              <InputLabeled handleInputChange={handleInputChange} label="Cantidad de estacionamientos" type="number" value={valoresInputs['Cantidad de estacionamientos'] || ''}/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="M2 total de estacionamientos"/>
+              <InputLabeled handleInputChange={handleInputChange} label="M2 total de estacionamientos" value={valoresInputs['M2 total de estacionamientos'] || ''}/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="M2 total de oficinas"/>
+              <InputLabeled handleInputChange={handleInputChange} label="M2 total de oficinas" value={valoresInputs['M2 total de oficinas'] || ''}/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="Cantidad de depósitos" type="number"/>
+              <InputLabeled handleInputChange={handleInputChange} label="Cantidad de depósitos" type="number" value={valoresInputs['Cantidad de depósitos'] || ''}/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
-              <InputLabeled handleInputChange={handleInputChange} label="M2 total de depósitos" type="number"/>
+              <InputLabeled handleInputChange={handleInputChange} label="M2 total de depósitos" type="number" value={valoresInputs['M2 total de depósitos'] || ''}/>
             </div>
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
               <div className='relative flex flex-col justify-between h-full'>
@@ -331,8 +371,8 @@ export default function Home() {
           <button onClick={agregarComponente} type="button" className="absolute top-5 md:top-6 right-0 md:right-3 focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Agregar Fila</button>
           <h2 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl py-6">Lógica de pagos</h2>
           <div className="flex flex-col divide-y-2">
-            {indexes.map((index, _) => (
-              <LogicaPago lastEstType={lastEstType} key={index} customKey={index} handleInputChangeP={handleInputChange} handleSubmit={handleSubmit} quitarComponente={quitarComponente}/> // Usa un key único para cada componente
+            {indexes.map((index) => (
+              <LogicaPago data={valoresInputs["logica" + index]} lastEstType={lastEstType} key={index} customKey={index} handleInputChangeP={handleInputChange} handleSubmit={handleSubmit} quitarComponente={quitarComponente}/> // Usa un key único para cada componente
             ))}
           </div>
           <button onClick={() => handleSubmit(cantidadComponentes,true)} type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Generar Pagos</button>

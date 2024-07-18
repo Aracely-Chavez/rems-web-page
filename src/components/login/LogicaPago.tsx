@@ -20,7 +20,7 @@ interface LogicaPagoProps {
     [key: string]: string;
   }
 
-export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstType, quitarComponente}: LogicaPagoProps) {
+export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstType, quitarComponente, data}: LogicaPagoProps) {
     const [tipoPago, setTipoPago] = useState<string>('fijo');
     const [valoresInputs, setValoresInputs] = useState<string[]>([]);
     const [valoresLogica, setValoresLogica] = useState<ValoresState>({});
@@ -29,7 +29,15 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstT
     const [flagEst, setFlagEst] = useState(0);
 
     useEffect(() => {
-        handleLogicaChange("tipoPago",'fijo');
+        if (data){
+          setValoresLogica(data);
+          setTipoPago(data["tipoPago"]);
+          console.log(data["valores"])
+          setValoresInputs(data["valores"]);
+        }
+        else {
+          handleLogicaChange("tipoPago",'fijo');
+        }
     },[])
 
     const valores = {
@@ -133,10 +141,10 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstT
     <div className='flex flex-wrap gap-3 justify-between' logica-key={customKey}>
       <div className='flex flex-wrap gap-3 pt-4'>
         <div className='w-36'>
-            <InputLabeledIn onChange={handleMesCorteChange} label='Mes de corte' type='number'/>
+            <InputLabeledIn value={valoresLogica['mes']} onChange={handleMesCorteChange} label='Mes de corte' type='number'/>
         </div>
         <div className='grow max-w-80'>
-            <InputLabeledIn isSelect handleSelectTipoPago={handleTipoPagoChange} label='Tipo de pago'/>
+            <InputLabeledIn valueS={valoresLogica['tipoPago']} isSelect handleSelectTipoPago={handleTipoPagoChange} label='Tipo de pago'/>
         </div>
         {tipoPago && valores[tipoPago].map((valor, index) => (
         <div key={index}>
@@ -150,7 +158,7 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstT
             <div className='py-3 border-gray-300 relative'>
               <label htmlFor="Tipo" className='absolute block text-sm bg-white lg:text-base font-semibold top-0 left-3 px-2'>Tipo</label>
               <div>
-                <select className="border-2 rounded-md border-black p-2 w-full" data-key={index} onChange={handleInputChange}>
+                <select value={valoresInputs[index]} className="border-2 rounded-md border-black p-2 w-full" data-key={index} onChange={handleInputChange}>
                     <option value="total">Total</option>
                     <option value="xM2Est">x M2 Estacionamiento</option>
                     <option value="xM2Dep">x M2 Deposito</option>
@@ -166,7 +174,7 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstT
             <div className='py-3 border-gray-300 relative'>
               <label htmlFor="Asociado a" className='absolute block text-sm bg-white lg:text-base font-semibold top-0 left-3 px-2'>Asociado a</label>
               <div>
-                <select className="border-2 rounded-md border-black p-2 w-full" data-key={index} onChange={handleInputChange}>
+                <select value={valoresInputs[index]} className="border-2 rounded-md border-black p-2 w-full" data-key={index} onChange={handleInputChange}>
                     <option value="xM2Est">Estacionamientos</option>
                     <option value="xM2Dep">Depositos</option>
                     <option value="xM2Ofi">Oficinas</option>
@@ -186,7 +194,7 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstT
           valor != 'switchEst' &&
           (
             <div className='w-44 pb-4'>
-                <InputLabeledIn onChange={handleInputChange} customKey={index} label={valor} />
+                <InputLabeledIn value={valoresInputs[index]} onChange={handleInputChange} customKey={index} label={valor} />
               </div>
           )}
         </div>
