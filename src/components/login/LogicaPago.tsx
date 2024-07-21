@@ -165,6 +165,7 @@ export function LogicaPago({handleInputChangeP,customKey, handleSubmit, lastEstT
                     <option value="xM2Ofi">x M2 Oficina</option>
                     <option value="xEst">x # Estacionamiento</option>
                     <option value="xDep">x # Deposito</option>
+                    <option value="xOfi">x Oficinas</option>
                 </select>
               </div>
               

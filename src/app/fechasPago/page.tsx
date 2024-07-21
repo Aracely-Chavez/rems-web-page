@@ -62,9 +62,9 @@ function FechasPagoContent() {
         
         let fechasSet: Set<string> = new Set();
         contratos.forEach(contrato => {
-        contrato.pagos.forEach(pago => {
-            fechasSet.add(pago.fecha);
-        });
+          contrato.pagos.forEach(pago => {
+              fechasSet.add(pago.fecha);
+          });
         });
 
         // Convertir Set a Array y ordenar las fechas

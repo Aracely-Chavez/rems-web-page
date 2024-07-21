@@ -15,29 +15,29 @@ const ContratoCard = ({ contrato, isChecked, onToggle }) => {
 
   return (
     <div className="border rounded-lg shadow-lg p-4 bg-white flex justify-between items-center">
-        <div>
-            <h3 className="text-xl font-semibold mb-2">{razon_social}</h3>
-            <p className="text-gray-600">Fecha de inicio: {format(parseISO(fecha_inicio), 'dd/MM/yyyy')}</p>
-            <p className="text-gray-600">Fecha de creación: {format(new Date(fecha_creacion), 'dd/MM/yyyy HH:mm:ss a')}</p>
-            {/* Otros datos del contrato */}
-            {/* ... */}
-        </div>
-        <div className="ml-4">
-            <Link href={{ pathname: '/contratoEdit', query: { contrato: id } }}
-                className=" bg-blue-500 hover:bg-blue-700 h-6 text-white font-bold py-2 px-4 mx-6 rounded">
-                Editar
-            </Link>
-            <label className="inline-flex items-center">
-            <input
-                type="checkbox"
-                className="form-checkbox h-6 w-6 text-indigo-600"
-                checked={isChecked}
-                onChange={handleToggle}
-            />
-            <span className="ml-2 text-gray-700">Seleccionar</span>
-            </label>
-        </div>
-        </div>
+      <div>
+          <h3 className="text-xl font-semibold mb-2">{razon_social}</h3>
+          <p className="text-gray-600">Fecha de inicio: {format(parseISO(fecha_inicio), 'dd/MM/yyyy')}</p>
+          <p className="text-gray-600">Fecha de creación: {format(new Date(fecha_creacion), 'dd/MM/yyyy HH:mm:ss a')}</p>
+          {/* Otros datos del contrato */}
+          {/* ... */}
+      </div>
+      <div className="ml-4">
+          <Link href={{ pathname: '/contratoEdit', query: { contrato: id } }}
+              className=" bg-blue-500 hover:bg-blue-700 h-6 text-white font-bold py-2 px-4 mx-6 rounded">
+              Editar
+          </Link>
+          <label className="inline-flex items-center">
+          <input
+              type="checkbox"
+              className="form-checkbox h-6 w-6 text-indigo-600"
+              checked={isChecked}
+              onChange={handleToggle}
+          />
+          <span className="ml-2 text-gray-700">Seleccionar</span>
+          </label>
+      </div>
+    </div>
   );
 };
 
@@ -57,6 +57,19 @@ const ContratosScreen = ( ) => {
   const handleSortOrderChange = () => {
     setIsAscending(!isAscending);
   };
+
+  const handleSelectAll = () => {
+    if (contratos.length !== selectedContratos.length){
+      const newSelectedContratos = [];
+      contratos.forEach(contrato => {
+        newSelectedContratos.push(contrato.id);
+      });
+      setSelectedContratos(newSelectedContratos);
+    }
+    else{
+      setSelectedContratos([]);
+    }
+  }
 
 
   useEffect(() => {
@@ -171,6 +184,17 @@ const ContratosScreen = ( ) => {
               className=" bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded">
                 {isAscending ? 'Ascendente' : 'Descendente'}
               </button>
+              <div className="flex flex-row-reverse">
+                <label className="inline-flex items-center">
+                <input
+                    type="checkbox"
+                    className="form-checkbox h-6 w-6 text-indigo-600"
+                    checked={contratos.length === selectedContratos.length}
+                    onChange={handleSelectAll}
+                />
+                <span className="ml-2 text-gray-700">Seleccionar Todos</span>
+                </label>
+              </div>
             </div>
             <div className="contrato-container my-8">
                 {sortedList.map((contrato) => (
