@@ -137,11 +137,11 @@ function FechasPagoContent() {
 
                             return (
                               <td key={fecha} className={`whitespace-nowrap px-6 py-4 ${esPG ? 'bg-green-200' : claseFondo}`}>
-                                {monto}
+                                {monto.toLocaleString('es-PE')}
                               </td>
                             );
                           })}
-                          <td className="whitespace-nowrap px-6 py-4 font-bold">{Math.round((totalMonto + Number.EPSILON) * 100) / 100}</td>
+                          <td className="whitespace-nowrap px-6 py-4 font-bold">{(Math.round((totalMonto + Number.EPSILON) * 100) / 100).toLocaleString('es-PE')}</td>
                         </tr>
                       );
                     })}
