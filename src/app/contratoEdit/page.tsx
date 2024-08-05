@@ -28,6 +28,9 @@ function ContratoEditContent() {
     const [valoresInputs, setValoresInputs] = useState<ValoresState>({});
     const [data, setData] = useState({fechas: [], pagos: []});
     const [isData, setIsData] = useState(false);
+    const [propietarios, setPropietarios] = useState([]);
+    const [edificios, setEdificios] = useState([]);
+    const [propietarioSelected, setPropietarioSelected] = useState(0)
     const [lastEstType, setLastEstType] = useState(-1); //En desuso
 
   useEffect(() => {
@@ -35,6 +38,28 @@ function ContratoEditContent() {
   },[])
 
   function loadInitialData(){
+
+    const urlProp = 'http://164.68.101.193:5000/propietarios';
+    //const url = 'http://127.0.0.1:5000/contratos';
+
+    const fetchDataProp = async () => {
+      try {
+        const requestOptions = {
+          method: 'GET',
+        };
+        const response = await fetch(urlProp, requestOptions);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos');
+        }
+        const data = await response.json();
+        setPropietarios(data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    fetchDataProp();
+
     const url = 'http://164.68.101.193:5000/contrato_por_id?id='+ search;
         //const url = 'http://127.0.0.1:5000/contratos_por_ids?ids=' + search;
 
@@ -50,17 +75,92 @@ function ContratoEditContent() {
             const resp = await response.json();
             console.log(resp);
             setValoresInputs(resp.valores);
-            //setData(resp.data);
-            //setIsData(true);
+            updatePropietario(resp.valores.edificio_id);
             setCantidadComponentes(resp.cantidadComponentes);
             setIndexes(resp.indexes)
           } catch (error) {
+            console.log(error.message)
             alert("Hubo un error al buscar el contrato")
           }
         };
     
         fetchData();
   }
+
+  function updatePropietario(idEdificio){
+    const url = 'http://164.68.101.193:5000/edificio/'+ idEdificio;
+        //const url = 'http://127.0.0.1:5000/contratos_por_ids?ids=' + search;
+
+    const fetchData = async () => {
+      try {
+        const requestOptions = {
+          method: 'GET',
+        };
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos');
+        }
+        const resp = await response.json();
+        setPropietarioSelected(resp.propietario_id);
+        handlePropietarioChangeOne(resp.propietario_id);
+      } catch (error) {
+        alert("Hubo un error al buscar el edificio")
+      }
+    };
+
+    fetchData();
+  }
+
+  const handlePropietarioChangeOne = (id) => {
+    const url = 'http://164.68.101.193:5000/edificios/'+id;
+    console.log(url)
+    //const url = 'http://127.0.0.1:5000/contratos';
+
+    const fetchData = async () => {
+      try {
+        const requestOptions = {
+          method: 'GET',
+        };
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos');
+        }
+        const data = await response.json();
+        setEdificios(data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    fetchData();
+  };
+
+  const handlePropietarioChange = (event) => {
+    if(event.target.value===""){
+      setEdificios([]);
+    }
+    const url = 'http://164.68.101.193:5000/edificios/'+event.target.value;
+    console.log(url)
+    //const url = 'http://127.0.0.1:5000/contratos';
+
+    const fetchData = async () => {
+      try {
+        const requestOptions = {
+          method: 'GET',
+        };
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos');
+        }
+        const data = await response.json();
+        setEdificios(data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    fetchData();
+  };
 
   function convertirFecha(fechaEnMMDDAAAA) {
     // Dividir la fecha en sus componentes (mes, día y año)
@@ -313,14 +413,29 @@ function ContratoEditContent() {
         <div>
           <h2 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl py-6">Datos del edificio</h2>
           <div className="grid grid-flow-row grid-cols-12 w-full gap-x-3 sm:gap-x-4">
-            <div className="col-span-12 sm:col-span-9">
-              <InputLabeled handleInputChange={handleInputChange} label="Nombre del propietario *"/>
+          <div className="col-span-12 md:col-span-6">
+              <div className='relative flex flex-col justify-between h-full'>
+                <label htmlFor="Propietario" className='block my-2 lg:text-lg font-semibold'>Propietario</label>
+                <select className="border-2 rounded-md border-black p-2 w-full" 
+                value={propietarioSelected}
+                onChange={handlePropietarioChange}>
+                    {propietarios.map((propietario, index) => (
+                      <option value={propietario.id}>{propietario.nombre}</option>
+                    ))}
+                </select>
+              </div>
             </div>
-            <div className="col-span-12 sm:col-span-3">
-              <InputLabeled handleInputChange={handleInputChange} label="RUC *"/>
-            </div>
-            <div className="col-span-12">
-              <InputLabeled handleInputChange={handleInputChange} label="Dirección *"/>
+            <div className="col-span-12 md:col-span-6">
+              <div className='relative flex flex-col justify-between h-full'>
+                <label htmlFor="Edificio" className='block my-2 lg:text-lg font-semibold'>Edificio</label>
+                <select className="border-2 rounded-md border-black p-2 w-full" 
+                value={valoresInputs['edificio_id']}
+                onChange={(event) => handleInputChange("edificio_id",event.target.value)}>
+                    {edificios.map((edificio, index) => (
+                      <option value={edificio.id}>{edificio.nombre}</option>
+                    ))}
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -360,7 +475,9 @@ function ContratoEditContent() {
             <div className="col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
               <div className='relative flex flex-col justify-between h-full'>
                 <label htmlFor="Moneda" className='block my-2 lg:text-lg font-semibold'>Moneda</label>
-                <select className="border-2 rounded-md border-black p-2 w-full" onChange={(event) => handleInputChange("moneda",event.target.value)}>
+                <select className="border-2 rounded-md border-black p-2 w-full" 
+                value={valoresInputs['moneda']}
+                onChange={(event) => handleInputChange("moneda",event.target.value)}>
                     <option value="Dolares">Dólares</option>
                     <option value="Soles">Soles</option>
                 </select>

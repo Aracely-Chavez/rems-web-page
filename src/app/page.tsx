@@ -16,10 +16,32 @@ export default function Home() {
   const [valoresInputs, setValoresInputs] = useState<ValoresState>({});
   const [data, setData] = useState({fechas: [], pagos: []});
   const [isData, setIsData] = useState(false);
+  const [propietarios, setPropietarios] = useState([]);
+  const [edificios, setEdificios] = useState([]);
   const [lastEstType, setLastEstType] = useState(-1); //En desuso
 
   useEffect(() => {
     handleInputChange("moneda", "Dolares");
+    const url = 'http://164.68.101.193:5000/propietarios';
+    //const url = 'http://127.0.0.1:5000/contratos';
+
+    const fetchData = async () => {
+      try {
+        const requestOptions = {
+          method: 'GET',
+        };
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos');
+        }
+        const data = await response.json();
+        setPropietarios(data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    fetchData();
   },[])
 
   function convertirFecha(fechaEnMMDDAAAA) {
@@ -84,6 +106,33 @@ export default function Home() {
         console.log(result);
         return result;
       });
+  };
+
+  const handlePropietarioChange = (event) => {
+    if(event.target.value===""){
+      setEdificios([]);
+    }
+    const url = 'http://164.68.101.193:5000/edificios/'+event.target.value;
+    console.log(url)
+    //const url = 'http://127.0.0.1:5000/contratos';
+
+    const fetchData = async () => {
+      try {
+        const requestOptions = {
+          method: 'GET',
+        };
+        const response = await fetch(url, requestOptions);
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos');
+        }
+        const data = await response.json();
+        setEdificios(data);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    fetchData();
   };
 
   const handleSubmit = (cantidadComponentes: number, render: boolean): Promise<number> => {
@@ -225,6 +274,7 @@ export default function Home() {
       m2_local: parseFloat(valoresInputs['M2 total de oficinas']),
       m2_depositos: parseFloat(valoresInputs['M2 total de depósitos']),
       moneda: valoresInputs['moneda'],
+      edificio_id: valoresInputs['edificio_id'],
       ipc: {
           "2019": 1.90,
           "2020": 1.97,
@@ -272,14 +322,26 @@ export default function Home() {
         <div>
           <h2 className="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl py-6">Datos del edificio</h2>
           <div className="grid grid-flow-row grid-cols-12 w-full gap-x-3 sm:gap-x-4">
-            <div className="col-span-12 sm:col-span-9">
-              <InputLabeled handleInputChange={handleInputChange} label="Nombre del propietario *"/>
+            <div className="col-span-12 md:col-span-6">
+              <div className='relative flex flex-col justify-between h-full'>
+                <label htmlFor="Propietario" className='block my-2 lg:text-lg font-semibold'>Propietario</label>
+                <select className="border-2 rounded-md border-black p-2 w-full" onChange={handlePropietarioChange}>
+                  <option value="">Seleccione una opción</option>
+                    {propietarios.map((propietario, index) => (
+                      <option value={propietario.id}>{propietario.nombre}</option>
+                    ))}
+                </select>
+              </div>
             </div>
-            <div className="col-span-12 sm:col-span-3">
-              <InputLabeled handleInputChange={handleInputChange} label="RUC *"/>
-            </div>
-            <div className="col-span-12">
-              <InputLabeled handleInputChange={handleInputChange} label="Dirección *"/>
+            <div className="col-span-12 md:col-span-6">
+              <div className='relative flex flex-col justify-between h-full'>
+                <label htmlFor="Edificio" className='block my-2 lg:text-lg font-semibold'>Edificio</label>
+                <select className="border-2 rounded-md border-black p-2 w-full" onChange={(event) => handleInputChange("edificio_id",event.target.value)}>
+                    {edificios.map((edificio, index) => (
+                      <option value={edificio.id}>{edificio.nombre}</option>
+                    ))}
+                </select>
+              </div>
             </div>
           </div>
         </div>

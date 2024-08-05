@@ -24,6 +24,18 @@ function FechasPagoContent() {
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
 
+    const getFormattedDateTime = () => {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses empiezan desde 0
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${year}${month}${day}_${hours}${minutes}${seconds}`; // Formato YYYYMMDD_HHMMSS
+    };
+    
+
 
     useEffect(() => {
         const url = 'http://164.68.101.193:5000/contratos_por_ids?ids='+ search;
@@ -92,6 +104,36 @@ function FechasPagoContent() {
   
   let valorAnterior = null;
 
+  const downloadExcel = async () => {
+    try {
+      const response = await fetch('http://164.68.101.193:5000/pagos_to_excel?ids='+ search, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      const currentDateTime = getFormattedDateTime();
+      a.href = url;
+      a.download = `Reporte_Pagos_${currentDateTime}.xlsx`; // Nombre del archivo con fecha y hora actual
+      document.body.appendChild(a);
+      a.click();
+  
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error al descargar el archivo:', error);
+    }
+  };
+
   return (
     <main className="flex relative w-full justify-center font-montserrat mb-7">
       <img src="/HeaderBackground.svg" alt="bg" className="absolute w-[100%] xl:-top-24 min-h-[400px] -top-6 -z-10" />
@@ -100,6 +142,7 @@ function FechasPagoContent() {
         <div className="flex h-[280px] sm:h-[330px] md:h-[360px] lg:h-[410px] 2xl:h-[520px]  justify-center items-center">
           <h1 className="font-bold text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl">Fechas de pago</h1>
         </div>
+        <button onClick={downloadExcel} type="button" className=" text-white bg-blue-500 hover:bg-blue-700 py-2 px-4 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Descargar en Excel</button>
         <div className ="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className ="inline-block min-w-full py-2 sm:px-6 lg:px-8">
             <div className ="overflow-hidden">
