@@ -328,7 +328,7 @@ export default function Home() {
                 <select className="border-2 rounded-md border-black p-2 w-full" onChange={handlePropietarioChange}>
                   <option value="">Seleccione una opción</option>
                     {propietarios.map((propietario, index) => (
-                      <option value={propietario.id}>{propietario.nombre}</option>
+                      <option key={index} value={propietario.id}>{propietario.nombre}</option>
                     ))}
                 </select>
               </div>
@@ -338,7 +338,7 @@ export default function Home() {
                 <label htmlFor="Edificio" className='block my-2 lg:text-lg font-semibold'>Edificio</label>
                 <select className="border-2 rounded-md border-black p-2 w-full" onChange={(event) => handleInputChange("edificio_id",event.target.value)}>
                     {edificios.map((edificio, index) => (
-                      <option value={edificio.id}>{edificio.nombre}</option>
+                      <option key={index} value={edificio.id}>{edificio.nombre}</option>
                     ))}
                 </select>
               </div>

@@ -420,7 +420,7 @@ function ContratoEditContent() {
                 value={propietarioSelected}
                 onChange={handlePropietarioChange}>
                     {propietarios.map((propietario, index) => (
-                      <option value={propietario.id}>{propietario.nombre}</option>
+                      <option key={index} value={propietario.id}>{propietario.nombre}</option>
                     ))}
                 </select>
               </div>
@@ -432,7 +432,7 @@ function ContratoEditContent() {
                 value={valoresInputs['edificio_id']}
                 onChange={(event) => handleInputChange("edificio_id",event.target.value)}>
                     {edificios.map((edificio, index) => (
-                      <option value={edificio.id}>{edificio.nombre}</option>
+                      <option key={index} value={edificio.id}>{edificio.nombre}</option>
                     ))}
                 </select>
               </div>
